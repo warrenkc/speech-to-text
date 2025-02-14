@@ -3,6 +3,10 @@ body {
     background-color: #f8f9fa; /* Light grey background */
 }
 
-.card-header h2 {
+.card-header h1 {
     margin-bottom: 0; /* Remove default margin on h2 in card header */
+    font-family: "Oswald", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
