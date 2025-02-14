@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
             audioConfig = SpeechSDK.AudioConfig.fromMicrophoneInput(microphoneOptions.value);
+            
             recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
             statusDisplay.textContent = "Listening...";
@@ -213,9 +214,9 @@ Please output just the results in English with no extra information or explanati
                 body: JSON.stringify({
                     'messages': [
                         // {'role': 'system', 'content': systemPrompt},
-                        {'role': 'user', 'content': systemPrompt + message + extraVocabulary}
+                        {'role': 'user', 'content': systemPrompt + message}
                     ],
-                    'model': 'deepseek-r1-distill-llama-70b',
+                    'model': 'gemma2-9b-it',
                     'temperature': 0.6
                 })
             });
