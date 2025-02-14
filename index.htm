@@ -82,6 +82,17 @@
                                 <option value="zh-TW">Chinese (Mandarin, traditional)</option>
                             </select>
                         </div>
+                        <!-- Add checkbox to enable Groq translation to English -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="groqTranslationCheckbox">
+                            <label class="form-check-label" for="groqTranslationCheckbox">Enable Groq Translation to English</label>    
+                        </div>
+
+                        <!-- Get Groq API key from user -->
+                        <div class="mb-3">
+                            <label for="groqAPIKeyInput" class="form-label">Groq API Key</label>
+                            <input type="text" class="form-control" id="groqAPIKeyInput" placeholder="Enter your Groq API Key">
+                        </div>
                         <div class="mb-3">
                            <!-- Select input device such as which microphone to use. -->
                             <label for="microphoneOptions" class="form-label">Microphone</label>
