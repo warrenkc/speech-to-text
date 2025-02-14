@@ -6,7 +6,18 @@
     <title>Speech to Text with Azure Cognitive Services</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <!-- Android Chrome android-chrome-192x192.png -->
+    <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+    <!-- Android Chrome android-chrome-512x512.png -->
+    <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
+
 </head>
 <body>
     <div class="container mt-5">
@@ -17,6 +28,18 @@
                         <h2>Speech to Text</h2>
                     </div>
                     <div class="card-body">
+                        <button class="btn btn-primary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            Instructions / Settings ⚙️
+                        </button>
+                        <div class="collapse mt-2" id="collapseExample">
+                            <div class="card card-body">
+                                <h3>Instructions</h3>
+                                <p>1. Enter your Azure Subscription Key and select the Azure Service Region.</p>
+                                <p>2. Select the language and microphone.</p>
+                                <p>3. Click the "Start Microphone" button to start speech to text.</p>
+                                <p>4. Click the "Stop Microphone" button to stop speech to text.</p>
+                                <p>5. The speech to text output will appear in the "Output Text" textarea.</p>
+                            </div>
                         <div class="mb-3">
                             <label for="subscriptionKey" class="form-label">Azure Subscription Key</label>
                             <input type="text" class="form-control" id="subscriptionKey" placeholder="Enter your Subscription Key">
@@ -65,9 +88,10 @@
                             <select id="microphoneOptions" class="form-select mb-1">                                
                             </select>
                         </div>
-                        <div class="d-grid gap-2 mb-3">
-                            <button class="btn btn-success" id="startButton">Start Microphone</button>
-                            <button class="btn btn-danger" id="stopButton" disabled>Stop Microphone</button>
+                        </div>
+                        <div class="mb-3 d-flex justify-content-between">
+                            <button class="btn btn-primary" id="startButton">Start Microphone 🎤</button>
+                            <button class="btn btn-secondary" id="stopButton" disabled>Stop Microphone ❌</button>
                         </div>
                         <div class="mb-3">
                             <label for="outputTextInProgress" class="form-label">Output Text In Progress</label>
@@ -76,6 +100,10 @@
                         <div class="mb-3">
                             <label for="outputText" class="form-label">Output Text</label>
                             <textarea class="form-control" id="outputText" rows="5" readonly placeholder="Speech to text output will appear here..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="outputTextFinal" class="form-label">Final Output Text (After additional processing)</label>
+                            <textarea class="form-control" id="outputTextFinal" rows="5" readonly placeholder="Speech to text output will appear here..."></textarea>
                         </div>
                         <div id="status" class="text-muted text-center">Ready</div>
                     </div>

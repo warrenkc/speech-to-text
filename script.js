@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Save settings to local storage
     function saveKey() {
-        localStorage.setItem('subscriptionKey', subscriptionKeyInput.value);
+        localStorage.subscriptionKey = subscriptionKeyInput.value;
     }
     function saveRegion() {         
         console.debug("Region: ", regionOptions.value);
