@@ -1,0 +1,22 @@
+{
+  "name": "speech-to-text",
+  "version": "1.0.0",
+  "description": "View the page at: https://warrenkc.github.io/speech-to-text/",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/warrenkc/speech-to-text.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/warrenkc/speech-to-text/issues"
+  },
+  "homepage": "https://github.com/warrenkc/speech-to-text#readme",
+  "dependencies": {
+    "groq-sdk": "^0.15.0"
+  }
+}
