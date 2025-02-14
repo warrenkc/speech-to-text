@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
     I used speech to text to produce the Mandarin Chinese text below. This is from a talk in Taiwan by a Japanese elder speaking Mandarin Chinese. Please fix any mistakes in the transcription because the speaker has a Japanese accent and the speech to text makes mistakes in the transcription. Please make it coherent and flow naturally. Remember this is from a meeting of Jehovah's Witnesses and the topics are often about being a Christian and following Bible principles.
 Please output just the results in English with no extra information or explanation. Thanks!
     */
-    const systemPrompt = "I used speech to text to produce the Mandarin Chinese text below. This is from a talk in Taiwan by a Japanese elder speaking Mandarin Chinese. Please fix any mistakes in the transcription because the speaker has a Japanese accent and the speech to text makes mistakes in the transcription. Please make it coherent and flow naturally. Remember this is from a meeting of Jehovah's Witnesses and the topics are often about being a Christian and following Bible principles. 範例：如果有人錯誤地說「神經」而不是「聖經」，他們可能會不小心把聖經叫做「瘋狂」而不是「神聖的經文」！ Please output just the results in English with no extra information or explanation. Thanks! ";   
+    const systemPrompt = "Please translate the following text into English fixing any mistakes etc... (with no extra information or explanation)";   
     const extraVocabulary = "List of vocabulary words that are might be used:\n聖經研究者\n耶和華見證人\n弟兄\n姐妹\n基督徒姐妹\n我們的基督徒姐妹\n你的屬靈的弟兄姐妹\n另外的綿羊\n受膏基督徒\n忠信睿智的奴隸\n中央長老團\n中央長老團成員\n受浸\n施浸\n浸禮\n傳道員\n未受浸傳道員\n受了浸的傳道員\n不經常傳道的傳道員\n不活躍的傳道員\n服務\n工作\n全時服務\n以XXX的身份服務\n長老\n先驅\n僕人\n全時僕人\n上帝的僕人\n志願人員\n不受薪的志願人員\n王國聚會所建築工程\n賑災救援工作\n需要\n參加先驅訓練班\n正規先驅\n輔助先驅\n經常輔助先驅\n特別先驅\n海外傳道員\n申請XXX\n申請特別服務機會\n申請參加基列聖經學校\n申請表\n推薦\n填寫申請表\n填寫正規先驅申請表\n提交申請表\n被推薦做長老\n推薦XXX成為長老\n任命\n被任命為XXX\n任命XXX為助理僕人\n資格\n討論XXX是否符合資格做未受浸傳道員\n符合資格受浸\n符合資格成為做未受浸傳道員\n監督\n《作為恩賜的人》\n助理僕人\n長老團\n舉行長老團會議\n會眾服務委員會\n長老團統籌者\n會眾秘書\n傳道監督\n守望台研究班主持人\n傳道訓練班監督\n特別導師\n小組監督\n司法委員會\n成立司法委員會\n屬靈的牧人\n屬靈的羊\n牧養探訪\n牧養探訪XXX\n周遊監督\n分區監督\n分區\n代理分區監督\n探訪會眾\n分區監督的探訪\n區域監督\n區域\n海外特訪監督\n會眾\n分會眾\n成立(一個)新的會眾\n基督徒會眾\n小組\n偏遠小組\n外語小組\n分部\n耶和華見證人的分部辦事處\n分部統籌者\n分部委員會\n國家委員會\n伯特利\n伯特利成員\n參觀\n傳道部\n世界總部\n招待員\n出席(聚會)的人\n聽眾\n計算出席聚會人數\n出席聚會人數\n傳遞麥克風的人\n麥克風\n傳遞(/負責)麥克風\n調整麥克風\n打開麥克風\n關閉麥克風\n負責音響的弟兄\n音響系統\n操作音響系統\n調大音量\n調小音量\n負責講臺的弟兄\n講臺\n講桌\n調整講桌\n負責書刊的弟兄\n書籍部\n預定書刊\n負責雜誌的弟兄\n雜誌部\n領取[你的]雜誌\n負責地區的弟兄\n(傳道)地區\n外勤服務地區地圖\n地區卡\n負責帳目的弟兄\n帳目\n會眾帳目\n整理會眾帳目\n審計會眾帳目\n捐款\n支持全球工作的捐款\n本地捐款\n計算捐款\n做出捐獻\n為全球工作捐款\n捐款箱\n把捐款放入捐款箱內 \n";
     // Code to use Groq API. 
     async function callGroqAPI(message) {
@@ -213,8 +213,8 @@ Please output just the results in English with no extra information or explanati
                 },
                 body: JSON.stringify({
                     'messages': [
-                        // {'role': 'system', 'content': systemPrompt},
-                        {'role': 'user', 'content': systemPrompt + message}
+                         {'role': 'system', 'content': systemPrompt},
+                        {'role': 'user', 'content': message}
                     ],
                     'model': 'gemma2-9b-it',
                     'temperature': 0.6
