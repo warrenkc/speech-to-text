@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const regionInput = document.getElementById('region');
     const regionOptions = document.getElementById("regionOptions");
     const languageOptions = document.getElementById("languageOptions");
-    const microphoneOptions= document.getElementById("microphoneOptions");
-    const groqTranslationCheckbox = document.getElementById('groqTranslationCheckbox');
+    const translationOptions = document.getElementById("translationOptions");
+    const outputLanguageOptions = document.getElementById("outputLanguageOptions");
+    const microphoneOptions= document.getElementById("microphoneOptions");    
     const groqAPIKeyInput = document.getElementById('groqAPIKeyInput');
     const llmPromptInput = document.getElementById('llmPromptInput');
     const insertDefaultPromptBtn = document.getElementById('insertDefaultPromptBtn');
@@ -24,9 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
     subscriptionKeyInput.value = localStorage.getItem('subscriptionKey') || "";
     regionOptions.value = localStorage.getItem('region') || "eastasia"; // Default region
     languageOptions.value = localStorage.getItem('language') || "en-US"; // Default language
+    translationOptions.value = localStorage.getItem('tranlationOption') || "noTranslation"; // Default translation
+    outputLanguageOptions.value = localStorage.getItem('outputLanguageOption') || "en-US"; // Default output language
     groqAPIKeyInput.value = localStorage.getItem('groqAPIKey') || "";
     llmPromptInput.value = localStorage.getItem('llmPrompt') || "";
-    groqTranslationCheckbox.checked = localStorage.getItem('groqTranslation') === 'true';
+    
     loadInputDevices(); // Load input devices
 
     const storedMicrophone = localStorage.getItem('microphone');
@@ -39,8 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
     subscriptionKeyInput.addEventListener('input', saveKey); // Save key on input. This means that the key is saved as soon as it is entered.
     regionOptions.addEventListener('change', saveRegion); // Save region on input. This means that the region is saved as soon as it is entered.
     languageOptions.addEventListener('change', saveLanguage); // Save language on input. This means that the language is saved as soon as it is entered.
+    translationOptions.addEventListener('change', saveTranslationOption); // Save translation on input. This means that the translation is saved as soon as it is entered.
+    outputLanguageOptions.addEventListener('change', saveOutputLanguageOption); // Save translation on input. This means that the translation is saved as soon as it is entered.
     microphoneOptions.addEventListener('change', saveMicrophone); // Save microphone on input. This means that the microphone is saved as soon as it is entered.
-    groqTranslationCheckbox.addEventListener('change', saveGroqTranslation); // Save translation on input. This means that the translation is saved as soon as it is entered.    
+
     groqAPIKeyInput.addEventListener('input', saveGroqAPIKey); // Save key on input. This means that the key is saved as soon as it is entered.    
     llmPromptInput.addEventListener('input', saveLLMPrompt); // Save key on input. This means that the key is saved as soon as it is entered.
     insertDefaultPromptBtn.addEventListener('click', () => {
@@ -62,12 +67,20 @@ document.addEventListener('DOMContentLoaded', function() {
         console.debug("Language: ", languageOptions.value);
         localStorage.language =  languageOptions.value;
     }
+    function saveTranslationOption() {
+        localStorage.tranlationOption = translationOptions.value;
+    }
+
+    function saveOutputLanguageOption() {
+        localStorage.outputLanguageOption = outputLanguageOptions.value;
+    }
+
     function saveMicrophone() {
         console.debug("Microphone: ", microphoneOptions.value);
         localStorage.microphone =  microphoneOptions.value;
     }
-    function saveGroqTranslation() {
-        localStorage.groqTranslation = groqTranslationCheckbox.checked;
+    function saveTranslationOption() {
+        localStorage.tranlationOption = translationOptions.value;
     }
     function saveGroqAPIKey() {
         localStorage.groqAPIKey = groqAPIKeyInput.value;
@@ -99,10 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
         stopButton.disabled = false;
         outputTextarea.value = ""; // Clear previous output
         statusDisplay.textContent = "Initializing...";
-
+    
         const subscriptionKey = subscriptionKeyInput.value.trim();
         const region = regionOptions.value.trim();
-
+    
         if (!subscriptionKey || !region) {
             alert("Please enter your Azure Subscription Key and Region.");
             startButton.disabled = false;
@@ -110,55 +123,93 @@ document.addEventListener('DOMContentLoaded', function() {
             statusDisplay.textContent = "Ready";
             return;
         }
-
+    
         try {
-            const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, region);
+            // Use SpeechTranslationConfig for translation, SpeechConfig otherwise
+            let speechConfig;
+            if (translationOptions.value === "azureTranslation") {
+                speechConfig = SpeechSDK.SpeechTranslationConfig.fromSubscription(subscriptionKey, region);                
+                speechConfig.addTargetLanguage(outputLanguageOptions.value);
+            } else {
+                speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, region);
+            }
+    
             speechConfig.speechRecognitionLanguage = languageOptions.value;
-
-            // audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
             audioConfig = SpeechSDK.AudioConfig.fromMicrophoneInput(microphoneOptions.value);
-            
-            recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
-
+    
+            // Use TranslationRecognizer for translation, SpeechRecognizer otherwise
+            let recognizer;
+            if (translationOptions.value === "azureTranslation") {
+               
+                recognizer = new SpeechSDK.TranslationRecognizer(speechConfig, audioConfig);
+            } else {
+                recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+            }
+            console.log("recognizer: ", recognizer);    
+    
             statusDisplay.textContent = "Listening...";
-
+    
             recognizer.recognizing = (s, event) => {
-                // Intermediate result (while speaking)
-                outputTextInProgress.value = event.result.text;
-            };
-
-            recognizer.recognized = (s, event) => {
-                if (event.result.reason == SpeechSDK.ResultReason.RecognizedSpeech) {
-                    outputTextarea.value += event.result.text + "\r\n"; // Final result
-                    // Scroll to bottom
-                    outputTextarea.scrollTop = outputTextarea.scrollHeight;
-                    if (groqTranslationCheckbox.checked) {
-                        // Call Groq API and get response and append to final output.
-                    callGroqAPI(event.result.text).then(data => {
-                        if (data && data.choices && data.choices[0] && data.choices[0].message) {
-                            let result = data.choices[0].message.content;
-                            // Remove <think> tags. Example: <think>好的，我现在需要处理这个</think>
-                            let cleanedStr = result.replace(/<think>[\s\S]*?<\/think>\s*/, '');
-                            console.log(cleanedStr);
-                            
-                            outputTextFinal.value += cleanedStr + "\r\n";
-                            // Scroll to bottom
-                            outputTextFinal.scrollTop = outputTextFinal.scrollHeight;
-                        }
-                    });
-                    }
-                    
-
-                } else if (event.result.reason == SpeechSDK.ResultReason.NoMatch) {
-                    outputTextarea.value += "No speech could be recognized...\r\n";
+                // Intermediate result (while speaking) - applies to both translation and non-translation
+                if (translationOptions.value === "azureTranslation") {
+                    console.log("Recognizing - azureTranslation", event);
+                    // The following line is wrong.
+                    outputTextInProgress.value = event.result.translations.get(outputLanguageOptions.value); // Show translated text
+                } else {
+                    outputTextInProgress.value = event.result.text;
                 }
             };
+            
+            recognizer.recognized = (s, event) => {
 
+                if (translationOptions.value === "azureTranslation") {
+                    console.log("Recognized - azureTranslation", event);
+                    console.log("event.result.reason: ", event.result.reason);
+                    if (event.result.reason == SpeechSDK.ResultReason.TranslatedSpeech) {
+                        // Access the translation
+                        console.log("event.result.translations: ", event.result.translations);
+                        const translation = event.result.translations.get(outputLanguageOptions.value);
+                        outputTextarea.value += translation + "\r\n";
+                        // Scroll to bottom
+                        outputTextarea.scrollTop = outputTextarea.scrollHeight;
+                    } else if (event.result.reason == SpeechSDK.ResultReason.RecognizedSpeech) {
+                        outputTextarea.value += event.result.text + " (No translation available)\r\n";
+                        // Scroll to bottom
+                        outputTextarea.scrollTop = outputTextarea.scrollHeight;
+                    }
+                } else { //Original no translation code
+                    if (event.result.reason == SpeechSDK.ResultReason.RecognizedSpeech) {
+                        outputTextarea.value += event.result.text + "\r\n";
+                        // Scroll to bottom
+                        outputTextarea.scrollTop = outputTextarea.scrollHeight;
+                        if (translationOptions.value === "groqTranslation") {
+                            // Call Groq API and get response and append to final output.
+                            callGroqAPI(event.result.text).then(data => {
+                                if (data && data.choices && data.choices[0] && data.choices[0].message) {
+                                    let result = data.choices[0].message.content;
+                                    // Remove <think> tags. Example: <think>好的，我现在需要处理这个</think>
+                                    let cleanedStr = result.replace(/<think>[\s\S]*?<\/think>\s*/, '');
+                                    console.log(cleanedStr);
+    
+                                    outputTextFinal.value += cleanedStr + "\r\n";
+                                    // Scroll to bottom
+                                    outputTextFinal.scrollTop = outputTextFinal.scrollHeight;
+                                }
+                            });
+                        }
+    
+    
+                    } else if (event.result.reason == SpeechSDK.ResultReason.NoMatch) {
+                        outputTextarea.value += "No speech could be recognized...\r\n";
+                    }
+                }
+            };
+    
             recognizer.sessionStopped = (s, event) => {
                 console.log("\n    Session stopped event.");
                 stopSpeechToText(); // Automatically stop after session ends
             };
-
+    
             recognizer.canceled = (s, event) => {
                 console.log(`Recognition canceled. Reason: ${event.reason}`);
                 if (event.reason == SpeechSDK.CancellationReason.Error) {
@@ -166,10 +217,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 stopSpeechToText(); // Stop on cancellation as well
             };
-
+    
             recognizer.startContinuousRecognitionAsync();
-
-
+    
         } catch (error) {
             console.error("Error initializing speech recognition:", error);
             statusDisplay.textContent = `Error: ${error.message}`;

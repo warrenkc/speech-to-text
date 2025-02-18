@@ -85,12 +85,25 @@
                                 <option value="zh-TW">Chinese (Mandarin, traditional)</option>
                             </select>
                         </div>
-                        <!-- Add checkbox to enable Groq translation to English -->
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="groqTranslationCheckbox">
-                            <label class="form-check-label" for="groqTranslationCheckbox">Enable Groq Translation to English</label>    
+                        <div class="mb-3">
+                            <label for="translationOptions" class="form-label">Translation Options</label>
+                            <select class="form-select" id="translationOptions">
+                                <option value="noTranslation">No translation</option>
+                                <option value="azureTranslation">Azure Speech Translation</option>
+                                <option value="groqTranslation">Use Groq API for LLM translation</option>
+                            </select>
                         </div>
-
+                        <!-- Add language option for output language using Azure Speech Translation -->
+                        <div class="mb-3" id="outputLanguageOptionsDiv">
+                            <label for="outputLanguageOptions" class="form-label">Output Speech Language</label>
+                            <select id="outputLanguageOptions" class="form-select mb-1">
+                                <option value="en" selected="selected">English (United States)</option>
+                                <option value="id">Indonesian</option>
+                                <option value="es">Spanish</option>
+                                <option value="ja">Japanese</option>
+                                <option value="zh">Chinese (Mandarin, traditional)</option>
+                            </select>
+                        </div>
                         <!-- Get Groq API key from user -->
                         <div class="mb-3">
                             <label for="groqAPIKeyInput" class="form-label">Groq API Key</label>

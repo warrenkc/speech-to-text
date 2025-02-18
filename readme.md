@@ -6,7 +6,7 @@ Note: the subscription key is stored in your browser's local storage. https://de
 
 **Features I want to add:**
 * Allow to use on device speech to text if Azure is not available.
-* Allow for speech translation. This means I can translate audio into another language text. Example: Mandarin speech into English text directly in one step.
+* Allow for speech translation. This means I can translate audio into another language text. Example: Mandarin speech into English text directly in one step. Add radio button to use Azure speech translation versus using LLM (Language Learning Model) for speech translation.
 * Improve the UI.
 * Option to send captions to Zoom for realtime speech translated captions.
 
