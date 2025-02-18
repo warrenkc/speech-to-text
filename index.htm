@@ -76,7 +76,7 @@
                             </select>                            
                         </div>
                         <div class="mb-3">
-                            <label for="languageOptions" class="form-label">Language</label>
+                            <label for="languageOptions" class="form-label">Input Speech Language</label>
                             <select id="languageOptions" class="form-select mb-1">
                                 <option value="en-US" selected="selected">English (United States)</option>
                                 <option value="id-ID">Indonesian</option>
@@ -96,6 +96,14 @@
                             <label for="groqAPIKeyInput" class="form-label">Groq API Key</label>
                             <input type="text" class="form-control" id="groqAPIKeyInput" placeholder="Enter your Groq API Key">
                         </div>
+                        <!-- Input box for the prompt to use for the LLM -->
+                        <div class="mb-3">
+                            <label for="llmPromptInput" class="form-label">LLM Prompt</label>
+                            <textarea class="form-control" id="llmPromptInput" rows="5" placeholder="Enter your LLM Prompt"></textarea>
+                            <!-- Btn small for inserting default prompt -->
+                            <button class="btn btn-primary btn-sm mt-2" id="insertDefaultPromptBtn">Insert Default Prompt</button>
+                        </div>
+
                         <div class="mb-3">
                            <!-- Select input device such as which microphone to use. -->
                             <label for="microphoneOptions" class="form-label">Microphone</label>
